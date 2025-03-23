@@ -55,7 +55,9 @@ def RegisterUser(request):
                 newuser = UserMaster.objects.create(role=role, otp=otp, email=email, password=password)
                 newcomp = Company.objects.create(user_id=newuser, firstname=fname, lastname=lname)
                 return render(request,"app/otpverify.html",{'email':email})
-
+            else:
+                message="Password doesn't match"
+                return render(request,"app/signup.html",{'msg':message})
 
 def OTPPage(request):
     return render(request,"app/otpverify.html")
@@ -89,28 +91,21 @@ def UserLogin(request):
 
         if user:
             if user.password ==  password and user.role=="Candidate":
-                can = Candidate.objects.get(user_id=user)
-                request.session['id'] = user.id
-                request.session['firstname'] = can.firstname
-                request.session['lastname'] = can.lastname
-                request.session['contact'] = can.contact
-                request.session['email'] = user.email
-                request.session['role'] = user.role
-                return render(request, "app/index.html")
-
+                user_obj = Candidate.objects.get(user_id=user)
             elif user.password ==  password and user.role=="Company":
-                com = Company.objects.get(user_id=user)
-                request.session['id'] = user.id
-                request.session['firstname'] = com.firstname
-                request.session['lastname'] = com.lastname
-                request.session['contact'] = com.contact
-                request.session['email'] = user.email
-                request.session['role'] = user.role
-                return render(request, "app/index.html")
-
+                user_obj = Company.objects.get(user_id=user)
             else:
                 message= "Password Doesn't match"
                 return render(request,"app/login.html",{'msg':message})
+            
+            request.session['id'] = user.id
+            request.session['firstname'] = user_obj.firstname
+            request.session['lastname'] = user_obj.lastname
+            request.session['contact'] = user_obj.contact
+            request.session['email'] = user.email
+            request.session['role'] = user.role
+            return render(request, "app/index.html")
+                  
         else:
             message="User Doesn't Exist"
             return render(request,"app/register.html",{'msg':message})
