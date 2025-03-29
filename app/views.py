@@ -55,6 +55,9 @@ def RegisterUser(request):
                 newuser = UserMaster.objects.create(role=role, otp=otp, email=email, password=password)
                 newcomp = Company.objects.create(user_id=newuser, firstname=fname, lastname=lname)
                 return render(request,"app/otpverify.html",{'email':email})
+            else:
+                message="Password doesn't match"
+                return render(request,"app/signup.html",{'msg':message})
 
 
 def OTPPage(request):
