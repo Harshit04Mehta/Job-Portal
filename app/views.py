@@ -59,6 +59,7 @@ def RegisterUser(request):
                 message="Password doesn't match"
                 return render(request,"app/signup.html",{'msg':message})
 
+
 def OTPPage(request):
     return render(request,"app/otpverify.html")
 
